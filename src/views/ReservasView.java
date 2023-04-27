@@ -11,19 +11,31 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
+
+import controllers.ReservaController;
+import logica.ConnectionFactory;
+import logica.Reserva;
+
 import java.awt.Font;
 import javax.swing.JComboBox;
+import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.DefaultComboBoxModel;
 import java.text.Format;
+import java.util.Date;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.Toolkit;
 import java.beans.PropertyChangeListener;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 
 @SuppressWarnings("serial")
@@ -142,6 +154,9 @@ public class ReservasView extends JFrame {
 		txtDataS.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				//Ativa o evento, após o usuário selecionar as datas, o valor da reserva deve ser calculado
+				double valor = calculaValor(txtDataE.getDate(), txtDataS.getDate());
+				if(valor > 0)
+					txtValor.setText("R$ " + valor);
 			}
 		});
 		txtDataS.setDateFormatString("yyyy-MM-dd");
@@ -155,7 +170,7 @@ public class ReservasView extends JFrame {
 		txtValor.setBackground(SystemColor.text);
 		txtValor.setHorizontalAlignment(SwingConstants.CENTER);
 		txtValor.setForeground(Color.BLACK);
-		txtValor.setBounds(78, 328, 43, 33);
+		txtValor.setBounds(78, 328, 150, 33);
 		txtValor.setEditable(false);
 		txtValor.setFont(new Font("Roboto Black", Font.BOLD, 17));
 		txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -295,9 +310,13 @@ public class ReservasView extends JFrame {
 		btnProximo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (ReservasView.txtDataE.getDate() != null && ReservasView.txtDataS.getDate() != null) {		
-					RegistroHospede registro = new RegistroHospede();
+				if (ReservasView.txtDataE.getDate() != null && ReservasView.txtDataS.getDate() != null) {	
+					var reserva = new Reserva(new java.sql.Date(txtDataE.getDate().getTime()), new java.sql.Date(txtDataS.getDate().getTime()),
+							calculaValor(txtDataE.getDate(), txtDataS.getDate()), txtFormaPagamento.getSelectedItem());
+					
+					RegistroHospede registro = new RegistroHospede(reserva);
 					registro.setVisible(true);
+					dispose();
 				} else {
 					JOptionPane.showMessageDialog(null, "Deve preencher todos os campos.");
 				}
@@ -328,4 +347,13 @@ public class ReservasView extends JFrame {
 	        int y = evt.getYOnScreen();
 	        this.setLocation(x - xMouse, y - yMouse);
 }
+	    
+	    public double calculaValor(Date entrada, Date saida) {
+	    	DateTime inicio = new DateTime(entrada);
+	    	DateTime fim = new DateTime(saida);
+	    	
+	    	return Days.daysBetween(inicio, fim).getDays() * 60;
+	    }
+	    
+	    
 }

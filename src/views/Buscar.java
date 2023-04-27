@@ -6,11 +6,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+
+import controllers.HospedeController;
+import controllers.ReservaController;
+import logica.Hospede;
+import logica.Reserva;
+
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
@@ -20,6 +29,8 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.List;
+import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class Buscar extends JFrame {
@@ -93,6 +104,7 @@ public class Buscar extends JFrame {
 		modelo.addColumn("Data Check Out");
 		modelo.addColumn("Valor");
 		modelo.addColumn("Forma de Pago");
+		atualizaReservas(modelo, new ReservaController().listarTodos());
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Buscar.class.getResource("/imagenes/reservado.png")), scroll_table, null);
 		scroll_table.setVisible(true);
@@ -104,13 +116,14 @@ public class Buscar extends JFrame {
 		modeloHospedes = (DefaultTableModel) tbHospedes.getModel();
 		modeloHospedes.addColumn("Numero de Hóspede");
 		modeloHospedes.addColumn("Nome");
-		modeloHospedes.addColumn("Sobrenome");
 		modeloHospedes.addColumn("Data de Nascimento");
 		modeloHospedes.addColumn("Nacionalidade");
 		modeloHospedes.addColumn("Telefone");
 		modeloHospedes.addColumn("Numero de Reserva");
+		
+		atualizaHospedes(modeloHospedes, new HospedeController().listarTodos());
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHospedes);
-		panel.addTab("Huéspedes", new ImageIcon(Buscar.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
+		panel.addTab("Hóspedes", new ImageIcon(Buscar.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
 		scroll_tableHuespedes.setVisible(true);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
@@ -244,6 +257,37 @@ public class Buscar extends JFrame {
 		btnDeletar.setBounds(767, 508, 122, 35);
 		btnDeletar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		contentPane.add(btnDeletar);
+		btnDeletar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(tbReservas.isShowing()) {
+					int row = tbReservas.getSelectedRow();
+					int col = tbReservas.getSelectedColumn();
+					int id = (int) tbReservas.getValueAt(row, 0);
+					int confirmacao = JOptionPane.showConfirmDialog(null, "DESEJA EXCLUIR A RESERVA Nº " + id + "?");
+					if(confirmacao == JOptionPane.OK_OPTION) {
+						ReservaController reservaController = new ReservaController();
+						reservaController.deletar(id);
+						atualizaReservas(modelo, reservaController.listarTodos());
+						
+					}
+				}
+				
+				if(tbHospedes.isShowing()) {
+					int row = tbHospedes.getSelectedRow();
+					int col = tbHospedes.getSelectedColumn();
+					String cpf = (String) tbHospedes.getValueAt(row, 0);
+					int confirmacao = JOptionPane.showConfirmDialog(null, "PARA EXCLUIR O HÓSPEDE SERÁ NECESSÁRIO"
+							+ "EXCLUIR SUAS RESERVAS. DESEJA CONTINUAR?");
+					if(confirmacao == JOptionPane.OK_OPTION) {
+						HospedeController hospedeController = new HospedeController();
+						hospedeController.deletar(cpf);
+						new ReservaController().deletarReservasHospede(cpf);
+						atualizaHospedes(modelo, hospedeController.listarTodos());
+					}
+				}
+			}
+		});
 		
 		JLabel lblExcluir = new JLabel("DELETAR");
 		lblExcluir.setHorizontalAlignment(SwingConstants.CENTER);
@@ -264,5 +308,32 @@ public class Buscar extends JFrame {
 	        int x = evt.getXOnScreen();
 	        int y = evt.getYOnScreen();
 	        this.setLocation(x - xMouse, y - yMouse);
-}
+	    }
+	    
+	    public void atualizaReservas(DefaultTableModel model, List<Reserva> reservas) {
+	    	model.setRowCount(0);
+	    	reservas.forEach(reserva -> {
+				Vector<Object> vector = new Vector();
+				vector.add(reserva.getId());
+				vector.add(reserva.getDataEntrada());
+				vector.add(reserva.getDataSaida());
+				vector.add("R$" + reserva.getValor());
+				vector.add(reserva.getPagamento());
+				model.addRow(vector);
+			});
+	    }
+	    
+	    public void atualizaHospedes(DefaultTableModel model, List<Hospede> hospedes) {
+	    	model.setRowCount(0);
+	    	hospedes.forEach(hospede -> {
+				Vector<Object> vector = new Vector();
+				vector.add(hospede.getCpf());
+				vector.add(hospede.getNome());
+				vector.add(hospede.getDataNascimento());
+				vector.add(hospede.getNascionalidade());
+				vector.add(hospede.getTelefone());
+				model.addRow(vector);
+			});
+	    }
+	    
 }

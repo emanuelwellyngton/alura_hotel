@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
@@ -20,6 +21,7 @@ import java.awt.Toolkit;
 public class Sucesso extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	private JFrame parent;
 
 	/**
 	 * Launch the application.
@@ -32,6 +34,10 @@ public class Sucesso extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Sucesso(JFrame parent) {
+		this.parent = parent;
 	}
 
 	/**
@@ -67,6 +73,9 @@ public class Sucesso extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						if(parent != null) {
+							parent.dispose();
+						}
 						dispose();//serve para fechar a janela atual
 						MenuUsuario usuario = new MenuUsuario(); 
 						usuario.setVisible(true);
