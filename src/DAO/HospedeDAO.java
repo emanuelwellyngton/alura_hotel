@@ -83,9 +83,21 @@ public class HospedeDAO {
 		}
 	}
 	
-	public void buscarIdUltimaReserva() {
-		try(var st = connection.prepareStatement("SELECT MAX(data_entrada), id")) {
-			
+	public int buscarIdUltimaReserva(Hospede hospede) {
+		try(var st = connection.prepareStatement("SELECT id FROM reservas WHERE data_entrada "
+				+ "IN (SELECT MAX(data_entrada) FROM reservas WHERE id_hospede=?)")) {
+			st.setString(1, hospede.getCpf());
+			if (st.execute()) {
+				try(ResultSet rs = st.getResultSet()) {
+					if(rs.next()) {
+						return rs.getInt("id");
+					}
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return 0;
 	}
 }

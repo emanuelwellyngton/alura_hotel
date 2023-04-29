@@ -28,7 +28,9 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -104,6 +106,7 @@ public class Buscar extends JFrame {
 		modelo.addColumn("Data Check Out");
 		modelo.addColumn("Valor");
 		modelo.addColumn("Forma de Pago");
+		modelo.addColumn("Hóspede");
 		atualizaReservas(modelo, new ReservaController().listarTodos());
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Buscar.class.getResource("/imagenes/reservado.png")), scroll_table, null);
@@ -229,6 +232,38 @@ public class Buscar extends JFrame {
 		btnbuscar.setBounds(748, 125, 122, 35);
 		btnbuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		contentPane.add(btnbuscar);
+		btnbuscar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(tbReservas.isShowing()) {
+					if(txtBuscar.getText().isBlank()) {
+						List<Reserva> todasReservas = new ReservaController().listarTodos();
+						atualizaReservas(modelo, todasReservas);
+					} else {
+						List<Reserva> resultadoBusca = new ReservaController().buscarPorId(Integer.parseInt(txtBuscar.getText()));
+						if(!resultadoBusca.isEmpty()) {
+							atualizaReservas(modelo, resultadoBusca);
+						} else {
+							new JOptionPane().showMessageDialog(null, "Nenhuma reserva encontrada");
+						}
+					}
+				}else {
+					if(txtBuscar.getText().isBlank()) {
+						List<Hospede> hospedes = new HospedeController().listarTodos();
+						atualizaHospedes(modeloHospedes, hospedes);
+					} else {
+						List<Hospede> resultadoBusca = new ArrayList();
+						Hospede hospede = new HospedeController().buscar(txtBuscar.getText());
+						if(hospede != null) {
+							resultadoBusca.add(hospede);
+							atualizaHospedes(modeloHospedes ,resultadoBusca);
+						} else {
+							new JOptionPane().showMessageDialog(null, "Nenhum hóspede encontrado");
+						}
+					}
+				}
+			}
+		});
 		
 		JLabel lblBuscar = new JLabel("BUSCAR");
 		lblBuscar.setBounds(0, 0, 122, 35);
@@ -277,13 +312,15 @@ public class Buscar extends JFrame {
 					int row = tbHospedes.getSelectedRow();
 					int col = tbHospedes.getSelectedColumn();
 					String cpf = (String) tbHospedes.getValueAt(row, 0);
-					int confirmacao = JOptionPane.showConfirmDialog(null, "PARA EXCLUIR O HÓSPEDE SERÁ NECESSÁRIO"
+					int confirmacao = JOptionPane.showConfirmDialog(null, "PARA EXCLUIR O HÓSPEDE, SERÁ NECESSÁRIO"
 							+ "EXCLUIR SUAS RESERVAS. DESEJA CONTINUAR?");
 					if(confirmacao == JOptionPane.OK_OPTION) {
 						HospedeController hospedeController = new HospedeController();
 						hospedeController.deletar(cpf);
-						new ReservaController().deletarReservasHospede(cpf);
-						atualizaHospedes(modelo, hospedeController.listarTodos());
+						ReservaController reservaController = new ReservaController();
+						reservaController.deletarReservasHospede(cpf);
+						atualizaHospedes(modeloHospedes, hospedeController.listarTodos());
+						atualizaReservas(modelo, reservaController.listarTodos());
 					}
 				}
 			}
@@ -319,6 +356,7 @@ public class Buscar extends JFrame {
 				vector.add(reserva.getDataSaida());
 				vector.add("R$" + reserva.getValor());
 				vector.add(reserva.getPagamento());
+				vector.add(reserva.getHospede().getCpf());
 				model.addRow(vector);
 			});
 	    }
@@ -332,6 +370,11 @@ public class Buscar extends JFrame {
 				vector.add(hospede.getDataNascimento());
 				vector.add(hospede.getNascionalidade());
 				vector.add(hospede.getTelefone());
+				
+				int id = hospede.getIdUltimaReserva();
+				if(id != 0)
+				vector.add(id);
+				
 				model.addRow(vector);
 			});
 	    }

@@ -1,7 +1,6 @@
 package DAO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class ReservaDAO {
 			st.setDate(1, reserva.getDataEntrada());
 			st.setDate(2, reserva.getDataSaida());
 			st.setDouble(3, reserva.getValor());
-			st.setString(4, (String) reserva.getPagamento());
+			st.setString(4, reserva.getPagamento().toString());
 			st.setString(5, reserva.getHospede().getCpf());
 			st.execute();
 		} catch (SQLException e) {
@@ -68,6 +67,27 @@ public class ReservaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Reserva> buscarPorId(int id) {
+		ArrayList<Reserva> reservas = new ArrayList<>();
+		try(var st = this.connection.prepareStatement("SELECT * FROM reservas WHERE id = ?")) {
+			st.setInt(1, id);
+			
+			if(st.execute()) {
+				try(ResultSet rs = st.getResultSet()) {
+					while(rs.next()) {
+						Reserva reserva = new Reserva(rs.getInt("id") ,rs.getDate("data_entrada"), rs.getDate("data_saida"),
+								rs.getDouble("valor"), rs.getObject("forma_pagamento"), rs.getString("id_hospede"));
+						reservas.add(reserva);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return reservas;
 	}
 
 }

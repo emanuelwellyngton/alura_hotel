@@ -37,5 +37,9 @@ public class HospedeController {
 	public void deletar(String cpf) {
 		this.hospedeDAO.deletar(cpf);
 	}
+	
+	public int buscarIdUltimaReserva(Hospede hospede) {
+		return this.hospedeDAO.buscarIdUltimaReserva(hospede);
+	}
 
 }

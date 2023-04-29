@@ -38,5 +38,9 @@ public class ReservaController {
 	public void deletarReservasHospede(String cpf) {
 		this.reservaDAO.deletarReservasHospede(cpf);
 	}
+	
+	public List<Reserva> buscarPorId(int id) {
+		return this.reservaDAO.buscarPorId(id);
+	}
 
 }

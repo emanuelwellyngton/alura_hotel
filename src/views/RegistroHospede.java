@@ -201,7 +201,9 @@ public class RegistroHospede extends JFrame {
 						txtTelefone.setText(hospede.getTelefone());
 						txtTelefone.setEditable(false);
 						
-						reserva.setHospede(hospede);
+						if(reserva != null)
+							reserva.setHospede(hospede);
+						
 					}
 					
 				}
@@ -353,10 +355,13 @@ public class RegistroHospede extends JFrame {
 							new java.sql.Date(txtDataN.getDate().getTime()), txtNacionalidade.getSelectedItem().toString(),
 							txtTelefone.getText());
 					new HospedeController().cadastrar(hospede);
+					
+					if (reserva != null) {
+						reserva.setHospede(hospede);
+						new ReservaController().cadastrar(reserva);
+					}
 				}
-				if (reserva != null) {
-					salvarRerseva(reserva);
-				}
+				new Sucesso().setVisible(true);
 			}
 		});
 		btnsalvar.setLayout(null);
@@ -404,15 +409,6 @@ public class RegistroHospede extends JFrame {
 		int x = evt.getXOnScreen();
 		int y = evt.getYOnScreen();
 		this.setLocation(x - xMouse, y - yMouse);
-	}
-	
-	public void salvarRerseva(Reserva reserva) {
-		new ReservaController().cadastrar(reserva);
-		alertaSucesso();
-	}
-	
-	public void alertaSucesso() {
-		new Sucesso(this).setVisible(true);
 	}
 
 }

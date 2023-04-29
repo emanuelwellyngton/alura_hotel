@@ -2,6 +2,8 @@ package logica;
 
 import java.util.Date;
 
+import controllers.HospedeController;
+
 public class Hospede {
 
 	private String cpf;
@@ -57,6 +59,10 @@ public class Hospede {
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
+	}
+	
+	public int getIdUltimaReserva() {
+		return new HospedeController().buscarIdUltimaReserva(this);
 	}
 
 }

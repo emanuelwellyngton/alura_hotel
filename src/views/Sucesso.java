@@ -76,7 +76,6 @@ public class Sucesso extends JDialog {
 						if(parent != null) {
 							parent.dispose();
 						}
-						dispose();//serve para fechar a janela atual
 						MenuUsuario usuario = new MenuUsuario(); 
 						usuario.setVisible(true);
 					}
