@@ -77,7 +77,8 @@ public class RegistroHospede extends JFrame {
 	 * Create the frame.
 	 */
 	public RegistroHospede() {
-
+		this.setTitle("Alura Hotel - Busca");
+		
 		setIconImage(
 				Toolkit.getDefaultToolkit().getImage(RegistroHospede.class.getResource("/imagenes/lOGO-50PX.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -362,6 +363,7 @@ public class RegistroHospede extends JFrame {
 					}
 				}
 				new Sucesso().setVisible(true);
+				dispose();
 			}
 		});
 		btnsalvar.setLayout(null);

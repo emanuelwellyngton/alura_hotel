@@ -69,6 +69,8 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
+		
+		this.setTitle("Alura Hotel - Login");
 
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 788, 527);

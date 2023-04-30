@@ -60,6 +60,7 @@ public class MenuUsuario extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
+		this.setTitle("Alura Hotel - Menu do Usuário");
 		
 		JPanel header = new JPanel();
 		header.addMouseMotionListener(new MouseMotionAdapter() {

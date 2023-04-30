@@ -31,6 +31,7 @@ public class MenuPrincipal extends JFrame {
 			public void run() {
 				try {
 					MenuPrincipal frame = new MenuPrincipal();
+					frame.setTitle("Menu Principal");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

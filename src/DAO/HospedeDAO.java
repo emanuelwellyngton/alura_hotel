@@ -84,8 +84,8 @@ public class HospedeDAO {
 	}
 	
 	public int buscarIdUltimaReserva(Hospede hospede) {
-		try(var st = connection.prepareStatement("SELECT id FROM reservas WHERE data_entrada "
-				+ "IN (SELECT MAX(data_entrada) FROM reservas WHERE id_hospede=?)")) {
+		try(var st = connection.prepareStatement("SELECT id FROM reservas WHERE id_hospede=? ORDER BY data_entrada DESC "
+				+ "LIMIT 1;")) {
 			st.setString(1, hospede.getCpf());
 			if (st.execute()) {
 				try(ResultSet rs = st.getResultSet()) {
