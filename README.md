@@ -2,12 +2,6 @@
 
 <!---Esses são exemplos. Veja https://shields.io para outras pessoas ou para personalizar este conjunto de escudos. Você pode querer incluir dependências, status do projeto e informações de licença aqui--->
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/iuricode/README-template?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/iuricode/README-template?style=for-the-badge)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/iuricode/README-template?style=for-the-badge)
-
 <img src="home-screenshot.jpg" alt="exemplo imagem">
 
 > Sistema gratuito de controle de reservas e clientes para hóteis.
@@ -27,13 +21,12 @@ O projeto ainda está em desenvolvimento e as próximas atualizações serão vo
 - [x] Registro de reservas e hópedes
 - [x] Listagem das reservas e hóspedes
 - [x] Sistema de busca
-- [ ] Deletar reservas e hóspedes
-- [ ] Edição de informações das reservas e hóspedes
+- [ ] Outras formas de busca
+- [ ] Controle de quartos
 
 ## 💻 Pré-requisitos
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
-<!---Estes são apenas requisitos de exemplo. Adicionar, duplicar ou remover conforme necessário--->
 * Você instalou a versão mais recente do `Java RE`
 * Você pode rodar o Alura Hotel em qualquer máquina compatível com o Java Runtime Evironment.
 
@@ -66,10 +59,11 @@ Adicione comandos de execução e exemplos que você acha que os usuários achar
 <table>
   <tr>
     <td align="center">
-      <a href="#">
-        <img src="https://avatars.githubusercontent.com/u/34836287?s=400&u=beb24a5ece58f5ed180e939df1626fdcca6912d8&v=4" width="100px;" alt="Foto do Iuri Silva no GitHub"/><br>
+      <a href="https://www.linkedin.com/in/emanuel-wellyngton/">
+        <img src="https://avatars.githubusercontent.com/u/34836287?s=400&u=beb24a5ece58f5ed180e939df1626fdcca6912d8&v=4" width="200px;" alt="Foto do Iuri Silva no GitHub"/><br>
         <sub>
           <b>Emanuel Wellyngton</b>
+          <p>Desenvolvedor Full-Stack</p>
         </sub>
       </a>
     </td>
