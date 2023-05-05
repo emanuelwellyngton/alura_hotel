@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import DAO.ReservaDAO;
-import logica.ConnectionFactory;
-import logica.Reserva;
+import modelos.ConnectionFactory;
+import modelos.Reserva;
 
 public class ReservaController {
 
@@ -41,6 +41,10 @@ public class ReservaController {
 	
 	public List<Reserva> buscarPorId(int id) {
 		return this.reservaDAO.buscarPorId(id);
+	}
+	
+	public int editar(Reserva reserva) {
+		return this.reservaDAO.editar(reserva);
 	}
 
 }

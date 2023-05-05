@@ -9,8 +9,9 @@ import javax.swing.table.DefaultTableModel;
 
 import controllers.HospedeController;
 import controllers.ReservaController;
-import logica.Hospede;
-import logica.Reserva;
+import modelos.ColunaNaoEditavel;
+import modelos.Hospede;
+import modelos.Reserva;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -27,7 +28,11 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -83,7 +88,6 @@ public class Buscar extends JFrame {
 		contentPane.add(txtBuscar);
 		txtBuscar.setColumns(10);
 		
-		
 		JLabel lblTitulo = new JLabel("SISTEMA DE BUSCA");
 		lblTitulo.setForeground(new Color(12, 138, 199));
 		lblTitulo.setFont(new Font("Roboto Black", Font.BOLD, 24));
@@ -99,7 +103,9 @@ public class Buscar extends JFrame {
 		tbReservas = new JTable();
 		tbReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbReservas.setFont(new Font("Roboto", Font.PLAIN, 16));
-		modelo = (DefaultTableModel) tbReservas.getModel();
+		tbReservas.setName("Reservas");
+		modelo = new ColunaNaoEditavel(tbReservas);
+		tbReservas.setModel(modelo);
 		modelo.addColumn("Número da reserva");
 		modelo.addColumn("Data Check In");
 		modelo.addColumn("Data Check Out");
@@ -115,7 +121,9 @@ public class Buscar extends JFrame {
 		tbHospedes = new JTable();
 		tbHospedes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbHospedes.setFont(new Font("Roboto", Font.PLAIN, 16));
-		modeloHospedes = (DefaultTableModel) tbHospedes.getModel();
+		tbHospedes.setName("Hóspedes");
+		modeloHospedes = new ColunaNaoEditavel(tbHospedes);
+		tbHospedes.setModel(modeloHospedes);
 		modeloHospedes.addColumn("Numero de Hóspede");
 		modeloHospedes.addColumn("Nome");
 		modeloHospedes.addColumn("Data de Nascimento");
@@ -284,6 +292,61 @@ public class Buscar extends JFrame {
 		lblEditar.setFont(new Font("Roboto", Font.PLAIN, 18));
 		lblEditar.setBounds(0, 0, 122, 35);
 		btnEditar.add(lblEditar);
+		btnEditar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(tbReservas.isShowing()) {
+					if(tbReservas.getSelectedRow() < 0)
+						new JOptionPane().showMessageDialog(null, "Selecione uma reserva para editar");
+					else {
+						int row = tbReservas.getSelectedRow();
+						int id = (int) tbReservas.getValueAt(row, 0);
+						ReservaController reservaController = new ReservaController();
+						Reserva reserva = reservaController.buscarPorId(id).get(0);
+						if(reserva != null) {
+							reserva.setDataEntrada(util.Date.parseToDateSql(tbReservas.getValueAt(row, 1).toString()));
+							reserva.setDataSaida(util.Date.parseToDateSql(tbReservas.getValueAt(row, 2).toString()));
+							double valor = reserva.calculaValor(reserva.getDataEntrada(), reserva.getDataSaida());
+							reserva.setValor(valor);
+							reserva.setPagamento((String) tbReservas.getValueAt(row, 4));
+							reserva.setHospede(new HospedeController().buscar(tbReservas.getValueAt(row, 5).toString()));
+							
+							if(reservaController.editar(reserva) != 0) {
+								new JOptionPane().showMessageDialog(null, "Reserva " + reserva.getId()
+									+ " atualizada com sucesso");
+								atualizaReservas(modelo, reservaController.listarTodos());
+							} else
+								new JOptionPane().showMessageDialog(null, "Não foi possível realizar a edição. Tente novalente.");
+						} else {
+							new JOptionPane().showMessageDialog(null, "Não foi possível realizar a edição. Tente novalente.");
+						}
+					}
+				} else if(tbHospedes.isShowing()) {
+					if(tbHospedes.getSelectedRow() < 0)
+						new JOptionPane().showMessageDialog(null, "Selecione uma reserva para editar");
+					else {
+						int row = tbHospedes.getSelectedRow();
+						String idHospede = (String) tbHospedes.getValueAt(row, 0);
+						HospedeController hospedeController = new HospedeController();
+						Hospede hospede = hospedeController.buscar(idHospede);
+						if(hospede != null) {
+							hospede.setNome((String) tbHospedes.getValueAt(row, 1));
+							hospede.setDataNascimento(util.Date.parseToDateSql(tbHospedes.getValueAt(row, 2).toString()));
+							hospede.setNascionalidade((String) tbHospedes.getValueAt(row, 3));
+							hospede.setTelefone((String) tbHospedes.getValueAt(row, 4));
+							
+							if(hospedeController.editar(hospede) > 0) {
+								new JOptionPane().showMessageDialog(null, "Hospede " + hospede.getCpf()
+								+ " atualizado com sucesso");
+								atualizaHospedes(modeloHospedes, hospedeController.listarTodos());
+							} else
+								new JOptionPane().showMessageDialog(null, "Não foi possível realizar a edição. Tente novalente.");
+						} else
+							new JOptionPane().showMessageDialog(null, "Não foi possível realizar a edição. Tente novalente.");
+					}
+				}
+			}
+		});
 		
 		JPanel btnDeletar = new JPanel();
 		btnDeletar.setLayout(null);

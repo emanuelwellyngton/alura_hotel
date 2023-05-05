@@ -1,3 +1,5 @@
-/views/
-/logica/
+/modelos/
 /DAO/
+/controllers/
+/views/
+/util/

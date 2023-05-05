@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import DAO.HospedeDAO;
-import logica.ConnectionFactory;
-import logica.Hospede;
+import modelos.ConnectionFactory;
+import modelos.Hospede;
 
 public class HospedeController {
 
@@ -40,6 +40,10 @@ public class HospedeController {
 	
 	public int buscarIdUltimaReserva(Hospede hospede) {
 		return this.hospedeDAO.buscarIdUltimaReserva(hospede);
+	}
+	
+	public int editar(Hospede hospede) {
+		return this.hospedeDAO.editar(hospede);
 	}
 
 }

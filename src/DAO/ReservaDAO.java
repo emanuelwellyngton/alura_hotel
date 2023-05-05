@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import logica.Reserva;
+import modelos.Reserva;
 
 public class ReservaDAO {
 	private Connection connection;
@@ -88,6 +88,24 @@ public class ReservaDAO {
 			e.printStackTrace();
 		}
 		return reservas;
+	}
+	
+	public int editar(Reserva reserva) {
+		try(var st = this.connection.prepareStatement("UPDATE reservas SET data_entrada=?, data_saida=?, valor=?, forma_pagamento=? "
+				+ "WHERE id=?;")) {
+			st.setDate(1, reserva.getDataEntrada());
+			st.setDate(2, reserva.getDataSaida());
+			st.setDouble(3, reserva.getValor());
+			st.setString(4, (String) reserva.getPagamento());
+			st.setInt(5, reserva.getId());
+			
+			return st.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

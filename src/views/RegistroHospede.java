@@ -13,9 +13,9 @@ import com.toedter.calendar.JDateChooser;
 import DAO.HospedeDAO;
 import controllers.HospedeController;
 import controllers.ReservaController;
-import logica.ConnectionFactory;
-import logica.Hospede;
-import logica.Reserva;
+import modelos.ConnectionFactory;
+import modelos.Hospede;
+import modelos.Reserva;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;

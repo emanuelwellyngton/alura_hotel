@@ -1,8 +1,11 @@
-package logica;
+package modelos;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import controllers.HospedeController;
 
@@ -75,5 +78,12 @@ public class Reserva {
 		return "Reserva [dataEntrada=" + dataEntrada + ", dataSaida=" + dataSaida + ", valor=" + valor + ", pagamento="
 				+ pagamento + ", hospede=" + hospede + "]";
 	}
+	
+	public double calculaValor(Date entrada, Date saida) {
+    	DateTime inicio = new DateTime(entrada);
+    	DateTime fim = new DateTime(saida);
+    	
+    	return Days.daysBetween(inicio, fim).getDays() * 60;
+    }
 
 }

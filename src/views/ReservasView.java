@@ -13,8 +13,8 @@ import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
 
 import controllers.ReservaController;
-import logica.ConnectionFactory;
-import logica.Reserva;
+import modelos.ConnectionFactory;
+import modelos.Reserva;
 
 import java.awt.Font;
 import javax.swing.JComboBox;

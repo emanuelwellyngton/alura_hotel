@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import logica.Hospede;
+import modelos.Hospede;
 
 public class HospedeDAO {
 
@@ -100,4 +100,23 @@ public class HospedeDAO {
 		}
 		return 0;
 	}
+	
+	public int editar(Hospede hospede) {
+		try(var st = connection.prepareStatement("UPDATE hospedes SET nome_commpleto=?, data_nascimento=?, "
+				+ "nacionalidade=?, telefone=? WHERE cpf=?;")) {
+			st.setString(1, hospede.getNome());
+			st.setDate(2, hospede.getDataNascimento());
+			st.setString(3, hospede.getNascionalidade());
+			st.setString(4, hospede.getTelefone());
+			st.setString(5, hospede.getCpf());
+			
+			return st.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 }
