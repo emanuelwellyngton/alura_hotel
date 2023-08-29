@@ -40,7 +40,7 @@ public class ReservaDAO {
 			ResultSet rs = st.getResultSet();
 			
 			while(rs.next()) {
-				Reserva reserva = new Reserva(rs.getInt("id"), rs.getDate("data_entrada"), rs.getDate("data_saida"),
+				Reserva reserva = new Reserva(rs.getInt("id_reserva"), rs.getDate("data_entrada"), rs.getDate("data_saida"),
 						rs.getDouble("valor"), rs.getObject("forma_pagamento"), rs.getString("id_hospede"));
 				reservas.add(reserva);
 			}
@@ -52,7 +52,7 @@ public class ReservaDAO {
 	}
 	
 	public void deletar(int id) {
-		try(var st = connection.prepareStatement("DELETE FROM reservas WHERE id = ?;")) {
+		try(var st = connection.prepareStatement("DELETE FROM reservas WHERE id_reserva = ?;")) {
 			st.setInt(1, id);
 			st.execute();
 		} catch (SQLException e) {
@@ -71,13 +71,13 @@ public class ReservaDAO {
 	
 	public List<Reserva> buscarPorId(int id) {
 		ArrayList<Reserva> reservas = new ArrayList<>();
-		try(var st = this.connection.prepareStatement("SELECT * FROM reservas WHERE id = ?")) {
+		try(var st = this.connection.prepareStatement("SELECT * FROM reservas WHERE id_reserva = ?")) {
 			st.setInt(1, id);
 			
 			if(st.execute()) {
 				try(ResultSet rs = st.getResultSet()) {
 					while(rs.next()) {
-						Reserva reserva = new Reserva(rs.getInt("id") ,rs.getDate("data_entrada"), rs.getDate("data_saida"),
+						Reserva reserva = new Reserva(rs.getInt("id_reserva") ,rs.getDate("data_entrada"), rs.getDate("data_saida"),
 								rs.getDouble("valor"), rs.getObject("forma_pagamento"), rs.getString("id_hospede"));
 						reservas.add(reserva);
 					}
@@ -92,7 +92,7 @@ public class ReservaDAO {
 	
 	public int editar(Reserva reserva) {
 		try(var st = this.connection.prepareStatement("UPDATE reservas SET data_entrada=?, data_saida=?, valor=?, forma_pagamento=? "
-				+ "WHERE id=?;")) {
+				+ "WHERE id_reserva=?;")) {
 			st.setDate(1, reserva.getDataEntrada());
 			st.setDate(2, reserva.getDataSaida());
 			st.setDouble(3, reserva.getValor());

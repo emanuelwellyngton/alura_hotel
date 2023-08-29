@@ -19,7 +19,7 @@ public class HospedeDAO {
 	}
 
 	public void cadastrar(Hospede hospede) {
-		String sql = "INSERT INTO hospedes(cpf, nome_commpleto, data_nascimento, nacionalidade, telefone)"
+		String sql = "INSERT INTO hospedes(cpf, nome_completo, data_nascimento, nacionalidade, telefone)"
 				+ " VALUES(?, ?, ?, ?, ?);";
 		try (PreparedStatement st = this.connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			st.setString(1, hospede.getCpf());
@@ -43,7 +43,7 @@ public class HospedeDAO {
 
 			try (ResultSet rs = st.getResultSet()) {
 				if (rs.next()) {
-					return new Hospede(rs.getString("cpf"), rs.getString("nome_commpleto"),
+					return new Hospede(rs.getString("cpf"), rs.getString("nome_completo"),
 							rs.getDate("data_nascimento"), rs.getString("nacionalidade"), rs.getString("telefone"));
 				}
 			}
@@ -63,7 +63,7 @@ public class HospedeDAO {
 			ResultSet rs = st.getResultSet();
 
 			while (rs.next()) {
-				Hospede hospede = new Hospede(rs.getString("cpf"), rs.getString("nome_commpleto"),
+				Hospede hospede = new Hospede(rs.getString("cpf"), rs.getString("nome_completo"),
 						rs.getDate("data_nascimento"), rs.getString("nacionalidade"), rs.getString("telefone"));
 				hospedes.add(hospede);
 			}
@@ -84,13 +84,13 @@ public class HospedeDAO {
 	}
 	
 	public int buscarIdUltimaReserva(Hospede hospede) {
-		try(var st = connection.prepareStatement("SELECT id FROM reservas WHERE id_hospede=? ORDER BY data_entrada DESC "
+		try(var st = connection.prepareStatement("SELECT id_reserva FROM reservas WHERE id_hospede=? ORDER BY data_entrada DESC "
 				+ "LIMIT 1;")) {
 			st.setString(1, hospede.getCpf());
 			if (st.execute()) {
 				try(ResultSet rs = st.getResultSet()) {
 					if(rs.next()) {
-						return rs.getInt("id");
+						return rs.getInt("id_reserva");
 					}
 				}
 			}
@@ -102,7 +102,7 @@ public class HospedeDAO {
 	}
 	
 	public int editar(Hospede hospede) {
-		try(var st = connection.prepareStatement("UPDATE hospedes SET nome_commpleto=?, data_nascimento=?, "
+		try(var st = connection.prepareStatement("UPDATE hospedes SET nome_completo=?, data_nascimento=?, "
 				+ "nacionalidade=?, telefone=? WHERE cpf=?;")) {
 			st.setString(1, hospede.getNome());
 			st.setDate(2, hospede.getDataNascimento());
